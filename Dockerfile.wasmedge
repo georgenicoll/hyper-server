@@ -1,0 +1,5 @@
+# Requires that a build has been done already with
+# cargo build --target wasm32-wasi --release
+FROM scratch
+ENTRYPOINT [ "/hyper-server.wasm" ]
+COPY target/wasm32-wasi/release/hyper-server.wasm /hyper-server.wasm

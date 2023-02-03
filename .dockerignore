@@ -1,0 +1,5 @@
+target/
+temp/
+krustlet/
+!target/wasm32-wasi/release/*.wasm
+!target/release/b

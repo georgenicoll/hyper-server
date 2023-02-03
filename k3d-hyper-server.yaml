@@ -1,0 +1,101 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hyper-server-slight
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hyper-server-slight
+  template:
+    metadata:
+      labels:
+        app: hyper-server-slight
+    spec:
+      runtimeClassName: wasmtime-slight
+      containers:
+        - name: hyper-server
+          image: ghcr.io/georgenicoll/hyper-server-slight:latest
+          command: [ "80" ]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hyper-server-slight
+spec:
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  selector:
+    app: hyper-server-slight
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hyper-server-spin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hyper-server-spin
+  template:
+    metadata:
+      labels:
+        app: hyper-server-spin
+    spec:
+      runtimeClassName: wasmtime-spin
+      containers:
+        - name: hyper-server
+          image: ghcr.io/georgenicoll/hyper-server-spin:latest
+          command: ["80"]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hyper-server-spin
+spec:
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  selector:
+    app: hyper-server-spin
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: hyper-server-strip-prefix
+spec:
+  stripPrefix:
+    forceSlash: false
+    prefixes:
+      - /hyper-server-spin
+      - /hyper-server-slight
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: hyper-server-ingress
+  annotations:
+    ingress.kubernetes.io/ssl-redirect: "false"
+    kubernetes.io/ingress.class: traefik
+    traefik.ingress.kubernetes.io/router.middlewares: default-hyper-server-strip-prefix@kubernetescrd
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /hyper-server-spin
+            pathType: Prefix
+            backend:
+              service:
+                name: hyper-server-spin
+                port:
+                  number: 80
+          - path: /hyper-server-slight
+            pathType: Prefix
+            backend:
+              service:
+                name: hyper-server-slight
+                port:
+                  number: 80
