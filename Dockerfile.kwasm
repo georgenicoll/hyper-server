@@ -1,0 +1,3 @@
+FROM scratch
+ADD target/wasm32-wasi/release/hyper-server.wasm /
+CMD [ "/hyper-server.wasm" ]

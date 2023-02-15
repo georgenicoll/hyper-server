@@ -1,66 +1,45 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: hello-wasm
+spec:
+  runtimeClassName: wasmedge
+  containers:
+    - name: hello-wasm
+      image: webassembly.azurecr.io/hello-wasm:v1
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: hyper-server-slight
+  name: hyper-server
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: hyper-server-slight
+      app: hyper-server
   template:
     metadata:
       labels:
-        app: hyper-server-slight
+        app: hyper-server
     spec:
-      runtimeClassName: wasmtime-slight
+      runtimeClassName: wasmedge
       containers:
         - name: hyper-server
-          image: ghcr.io/georgenicoll/hyper-server-slight:latest
-          command: [ "80" ]
+          #image: ghcr.io/georgenicoll/hyper-server:latest
+          image: georgenicoll/hyper-server-wasmedge:latest
+          command: [ "/hyper-server.wasm", "80" ]
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: hyper-server-slight
+  name: hyper-server
 spec:
   ports:
     - protocol: TCP
       port: 80
       targetPort: 80
   selector:
-    app: hyper-server-slight
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: hyper-server-spin
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: hyper-server-spin
-  template:
-    metadata:
-      labels:
-        app: hyper-server-spin
-    spec:
-      runtimeClassName: wasmtime-spin
-      containers:
-        - name: hyper-server
-          image: ghcr.io/georgenicoll/hyper-server-spin:latest
-          command: ["80"]
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: hyper-server-spin
-spec:
-  ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 80
-  selector:
-    app: hyper-server-spin
+    app: hyper-server
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
@@ -70,8 +49,7 @@ spec:
   stripPrefix:
     forceSlash: false
     prefixes:
-      - /hyper-server-spin
-      - /hyper-server-slight
+      - /hyper-server
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress

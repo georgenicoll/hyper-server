@@ -1,5 +1,0 @@
-# Requires that a build has been done already with
-# cargo build --target wasm32-wasi --release
-FROM wasmedge/slim-runtime:0.11.2
-ENTRYPOINT [ "wasmedge", "hyper-server.wasm" ]
-COPY target/wasm32-wasi/release/hyper-server.wasm /app/hyper-server.wasm

@@ -134,9 +134,9 @@ dependencies = [
 
 [[package]]
 name = "hyper_wasi"
-version = "0.15.0"
+version = "0.15.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4b903a973bd98c326103ea94336a9ffe44c57c71517d6be7639438021053dc6e"
+checksum = "7fe2af6e9e11f451560f8eaf059e3ac4caef61fddda8654242a0cebf36a08cec"
 dependencies = [
  "bytes",
  "futures-channel",

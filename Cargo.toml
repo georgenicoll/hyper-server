@@ -6,5 +6,5 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-hyper_wasi = { version = "0.15", features = [ "full"] }
+hyper_wasi = { version = "0.15.1", features = [ "full", "tcp" ] }
 tokio_wasi = { version = "1.21", features = ["io-util", "fs", "net", "time", "rt", "macros"] }

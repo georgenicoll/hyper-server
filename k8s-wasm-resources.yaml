@@ -1,16 +1,16 @@
-# ---
-# apiVersion: v1
-# kind: Pod
-# metadata:
-#   name: hello-wasm
-# spec:
-#   containers:
-#   - name: hello-wasm
-#     image: webassembly.azurecr.io/hello-wasm:v1
-#   tolerations:
-#   - effect: NoExecute
-#     key: kubernetes.io/arch
-#     operator: Equal
+ ---
+ apiVersion: v1
+ kind: Pod
+ metadata:
+   name: hello-wasm
+ spec:
+   containers:
+   - name: hello-wasm
+     image: webassembly.azurecr.io/hello-wasm:v1
+   tolerations:
+   - effect: NoExecute
+     key: kubernetes.io/arch
+     operator: Equal
 #     value: wasm32-wasi   # or wasm32-wasmcloud according to module target arch
 #   - effect: NoSchedule
 #     key: kubernetes.io/arch
@@ -24,10 +24,9 @@ metadata:
   labels:
     app: hyper-server
 spec:
-  me
   containers:
     - name: hyper-server
-      image: georgenicoll/hyper-server-wasmedge
+      image: ghcr.io/georgenicoll/hyper-server:latest
       imagePullPolicy: Always
       env:
         - name: RUST_LOG
