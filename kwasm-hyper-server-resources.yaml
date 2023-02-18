@@ -37,3 +37,21 @@ spec:
   selector:
     app: hyper-server
 ---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: hyper-server-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  rules:
+  - http:
+      paths:
+      - pathType: Prefix
+        path: /hyper-server(/|$)(.*)
+        backend:
+          service:
+            name: hyper-server
+            port:
+              number: 3000
+---
