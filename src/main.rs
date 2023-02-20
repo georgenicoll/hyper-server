@@ -13,15 +13,23 @@ async fn echo(req: Request<Body>) -> Result<Response<Body>, hyper::Error> {
         ))),
 
         //Simple echo back to the client
-        (&Method::POST, "/echo") => Ok(Response::new(req.into_body())),
+        (&Method::POST, "/echo") => {
+            let body_bytes = hyper::body::to_bytes(req.into_body()).await?;
+            let str = String::from_utf8(body_bytes.clone().to_vec()).unwrap();
+            println!("Echoing: {}", str);
+            Ok(Response::new(Body::from(body_bytes)))
+        },
 
         (&Method::POST, "/echo/reversed") => {
-            let whole_body = hyper::body::to_bytes(req.into_body()).await?;
-            let reversed_body = whole_body.iter().rev().cloned().collect::<Vec<u8>>();
+            let body_bytes = hyper::body::to_bytes(req.into_body()).await?;
+            let str = String::from_utf8(body_bytes.clone().to_vec()).unwrap();
+            println!("Echoing reversed: {}", str);
+            let reversed_body = body_bytes.iter().rev().cloned().collect::<Vec<u8>>();
             Ok(Response::new(Body::from(reversed_body)))
         },
 
         _ => {
+            println!("Unrecognised: {} {}", req.method(), req.uri().path());
             let mut not_found = Response::default();
             *not_found.status_mut() = StatusCode::NOT_FOUND;
             Ok(not_found)

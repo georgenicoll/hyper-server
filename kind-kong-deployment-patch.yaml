@@ -1,0 +1,43 @@
+# See https://kind.sigs.k8s.io/docs/user/ingress/#ingress-kong
+{
+  "spec": {
+    "template": {
+      "spec": {
+        "containers": [
+          {
+            "name": "proxy",
+            "ports": [
+              {
+                "containerPort": 8000,
+                "hostPort": 8080,
+                "name": "proxy",
+                "protocol": "TCP"
+              },
+              {
+                "containerPort": 8443,
+                "hostPort": 8443,
+                "name": "proxy-ssl",
+                "protocol": "TCP"
+              }
+            ]
+          }
+        ],
+        "nodeSelector": {
+          "ingress-ready": "true"
+        },
+        "tolerations": [
+          {
+            "key": "node-role.kubernetes.io/control-plane",
+            "operator": "Equal",
+            "effect": "NoSchedule"
+          },
+          {
+            "key": "node-role.kubernetes.io/master",
+            "operator": "Equal",
+            "effect": "NoSchedule"
+          }
+        ]
+      }
+    }
+  }
+}

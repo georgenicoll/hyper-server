@@ -32,6 +32,8 @@ See [KWasm on github](https://github.com/KWasm).
 
 ### Set up and run in kind cluster:
 
+Run the following commands (or just run [stand-up-kind-kwasm-cluster.sh](stand-up-kind-kwasm-cluster.sh)):
+
 ```bash
 # Create the kind cluster with 2 worksers
 kind create cluster --config kwasm-kind-cluster.yaml
