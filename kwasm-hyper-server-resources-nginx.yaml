@@ -1,0 +1,57 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hyper-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hyper-server
+  template:
+    metadata:
+      annotations:
+        module.wasm.image/variant: compat-smart
+      labels:
+        app: hyper-server
+    spec:
+      runtimeClassName: crun
+      nodeSelector:
+        kwasm.sh/kwasm-provisioned: kind-worker2
+      containers:
+      - args:
+        - /hyper-server.wasm
+        - "3000"
+        image: georgenicoll/hyper-server-buildah-kwasm:latest
+        name: hyper-server
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hyper-server
+spec:
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+  selector:
+    app: hyper-server
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: hyper-server-ingress
+spec:
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+  rules:
+  - http:
+      paths:
+      - pathType: Prefix
+        path: /hyper-server(/|$)(.*)
+        backend:
+          service:
+            name: hyper-server
+            port:
+              number: 3000
+---

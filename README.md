@@ -36,7 +36,7 @@ See:
 
 ```bash
 # Will run the commands to set up the cluster with kwasm and nginx ingress
-./kind-cluster-with-ingress.sh
+./kind-cluster-with-nginx.sh
 ```
 
 ## Exercise it

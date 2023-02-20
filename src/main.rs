@@ -8,12 +8,14 @@ use tokio::net::TcpListener;
 async fn echo(req: Request<Body>) -> Result<Response<Body>, hyper::Error> {
     match (req.method(), req.uri().path()) {
         //Server some instructions at /
-        (&Method::GET, "/") => Ok(Response::new(Body::from(
-            "Try posting some data to /echo or /echo/reversed"
-        ))),
+        (&Method::GET, "/") => {
+            Ok(Response::new(Body::from("Try posting some data to /echo or /echo/reversed")))
+        },
 
         //Simple echo back to the client
-        (&Method::POST, "/echo") => Ok(Response::new(req.into_body())),
+        (&Method::POST, "/echo") => {
+            Ok(Response::new(req.into_body()))
+        },
 
         (&Method::POST, "/echo/reversed") => {
             let whole_body = hyper::body::to_bytes(req.into_body()).await?;
@@ -22,6 +24,7 @@ async fn echo(req: Request<Body>) -> Result<Response<Body>, hyper::Error> {
         },
 
         _ => {
+            println!("Unknown path: {}", req.uri().path());
             let mut not_found = Response::default();
             *not_found.status_mut() = StatusCode::NOT_FOUND;
             Ok(not_found)
