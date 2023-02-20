@@ -26,17 +26,26 @@ curl localhost:3000/echo -XPOST -d 'Hello wasm world!'
 curl localhost:3000/echo/reversed -XPOST -d '!dlrow msaw sdrawkcab olleH'
 ```
 
-# KWasm with kind and nginx ingress
+# KWasm with kind and various ingress
 
 See:
 - [KWasm on github](https://github.com/KWasm)
 - [the kind ingress documentation](https://kind.sigs.k8s.io/docs/user/ingress/#ingress-nginx)
 
-## Set up and run in kind cluster
+## Ingress Types
+
+### nginx ingress
 
 ```bash
 # Will run the commands to set up the cluster with kwasm and nginx ingress
 ./kind-cluster-with-nginx.sh
+```
+
+### kong ingress
+
+```bash
+# Will run the commands to set up the cluster with kwasm and kong ingress
+./kind-cluster-with-kong.sh
 ```
 
 ## Exercise it
